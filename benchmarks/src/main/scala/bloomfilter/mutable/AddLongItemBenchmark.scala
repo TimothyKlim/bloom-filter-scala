@@ -15,5 +15,4 @@ class AddLongItemBenchmark {
     bf.add(1L)
   }
 
-
 }

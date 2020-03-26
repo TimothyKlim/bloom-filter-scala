@@ -14,7 +14,11 @@ class StringItemBenchmark {
   private val falsePositiveRate = 0.01
   private val random = new Random()
 
-  private val bf = BloomFilter.create[String](Funnels.stringFunnel(Charset.forName("UTF-8")), itemsExpected, falsePositiveRate)
+  private val bf = BloomFilter.create[String](
+    Funnels.stringFunnel(Charset.forName("UTF-8")),
+    itemsExpected,
+    falsePositiveRate
+  )
 
   @Param(Array("1024"))
   var length: Int = _

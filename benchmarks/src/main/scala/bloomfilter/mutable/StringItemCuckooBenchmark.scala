@@ -2,7 +2,12 @@ package bloomfilter.mutable
 
 import java.util.concurrent.TimeUnit
 
-import org.openjdk.jmh.annotations.{BenchmarkMode, OperationsPerInvocation, OutputTimeUnit, _}
+import org.openjdk.jmh.annotations.{
+  BenchmarkMode,
+  OperationsPerInvocation,
+  OutputTimeUnit,
+  _
+}
 
 import scala.util.Random
 

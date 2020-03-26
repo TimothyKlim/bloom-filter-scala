@@ -25,7 +25,10 @@ class UnsafeBitArray(val numberOfBits: Long) extends Serializable {
     }
   }
 
-  def combine(that: UnsafeBitArray, combiner: (Long, Long) => Long): UnsafeBitArray = {
+  def combine(
+      that: UnsafeBitArray,
+      combiner: (Long, Long) => Long
+  ): UnsafeBitArray = {
     val result = new UnsafeBitArray(this.numberOfBits)
     var index = 0L
     while (index < numberOfBits) {
@@ -39,13 +42,19 @@ class UnsafeBitArray(val numberOfBits: Long) extends Serializable {
   }
 
   def |(that: UnsafeBitArray): UnsafeBitArray = {
-    require(this.numberOfBits == that.numberOfBits, "Bitwise OR works only on arrays with the same number of bits")
+    require(
+      this.numberOfBits == that.numberOfBits,
+      "Bitwise OR works only on arrays with the same number of bits"
+    )
 
     combine(that, _ | _)
   }
 
   def &(that: UnsafeBitArray): UnsafeBitArray = {
-    require(this.numberOfBits == that.numberOfBits, "Bitwise AND works only on arrays with the same number of bits")
+    require(
+      this.numberOfBits == that.numberOfBits,
+      "Bitwise AND works only on arrays with the same number of bits"
+    )
 
     combine(that, _ & _)
   }
@@ -83,8 +92,9 @@ class UnsafeBitArray(val numberOfBits: Long) extends Serializable {
 
 object UnsafeBitArray {
 
-  @SerialVersionUID(1l)
-  private class SerializedForm(@transient var unsafeBitArray: UnsafeBitArray) extends Serializable {
+  @SerialVersionUID(1L)
+  private class SerializedForm(@transient var unsafeBitArray: UnsafeBitArray)
+      extends Serializable {
     private def writeObject(oos: ObjectOutputStream): Unit = {
       oos.defaultWriteObject()
       oos.writeLong(unsafeBitArray.numberOfBits)

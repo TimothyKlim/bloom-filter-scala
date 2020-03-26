@@ -12,7 +12,8 @@ class StringItemBenchmark {
   private val falsePositiveRate = 0.01
   private val random = new Random()
 
-  private var bf = BloomFilter(itemsExpected.toInt, falsePositiveRate, 0).create("")
+  private var bf =
+    BloomFilter(itemsExpected.toInt, falsePositiveRate, 0).create("")
 
   @Param(Array("1024"))
   var length: Int = _

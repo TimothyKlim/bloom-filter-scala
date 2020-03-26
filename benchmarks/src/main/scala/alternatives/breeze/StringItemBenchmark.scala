@@ -12,7 +12,8 @@ class StringItemBenchmark {
   private val falsePositiveRate = 0.01
   private val random = new Random()
 
-  private val bf = BloomFilter.optimallySized[String](itemsExpected.toDouble, falsePositiveRate)
+  private val bf = BloomFilter
+    .optimallySized[String](itemsExpected.toDouble, falsePositiveRate)
 
   @Param(Array("1024"))
   var length: Int = _

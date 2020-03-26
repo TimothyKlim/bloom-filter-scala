@@ -12,7 +12,11 @@ class ArrayByteItemBenchmark {
   private val falsePositiveRate = 0.01
   private val random = new Random()
 
-  private val bf = BloomFilter.create[Array[Byte]](Funnels.byteArrayFunnel(), itemsExpected, falsePositiveRate)
+  private val bf = BloomFilter.create[Array[Byte]](
+    Funnels.byteArrayFunnel(),
+    itemsExpected,
+    falsePositiveRate
+  )
 
   @Param(Array("1024"))
   var length: Int = _

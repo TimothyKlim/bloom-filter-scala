@@ -1,4 +1,3 @@
-
 import bloomfilter.mutable.BloomFilter
 
 object Main extends App {

@@ -9,17 +9,18 @@ trait CanGetDataFrom[-From] {
 
 object CanGetDataFrom {
 
-  implicit case object CanGetDataFromByteArray extends CanGetDataFrom[Array[Byte]] {
+  implicit case object CanGetDataFromByteArray
+      extends CanGetDataFrom[Array[Byte]] {
 
     override def getLong(buf: Array[Byte], offset: Int): Long = {
       (buf(offset + 7).toLong << 56) |
-          ((buf(offset + 6) & 0xffL) << 48) |
-          ((buf(offset + 5) & 0xffL) << 40) |
-          ((buf(offset + 4) & 0xffL) << 32) |
-          ((buf(offset + 3) & 0xffL) << 24) |
-          ((buf(offset + 2) & 0xffL) << 16) |
-          ((buf(offset + 1) & 0xffL) << 8) |
-          buf(offset) & 0xffL
+        ((buf(offset + 6) & 0xFFL) << 48) |
+        ((buf(offset + 5) & 0xFFL) << 40) |
+        ((buf(offset + 4) & 0xFFL) << 32) |
+        ((buf(offset + 3) & 0xFFL) << 24) |
+        ((buf(offset + 2) & 0xFFL) << 16) |
+        ((buf(offset + 1) & 0xFFL) << 8) |
+        buf(offset) & 0xFFL
     }
 
     override def getByte(from: Array[Byte], offset: Int): Byte = {
@@ -27,7 +28,8 @@ object CanGetDataFrom {
     }
   }
 
-  implicit case object CanGetDataFromArrayChar extends CanGetDataFrom[Array[Char]] {
+  implicit case object CanGetDataFromArrayChar
+      extends CanGetDataFrom[Array[Char]] {
     private val arrayCharOffset = unsafe.arrayBaseOffset(classOf[Array[Char]])
 
     override def getLong(from: Array[Char], offset: Int): Long = {

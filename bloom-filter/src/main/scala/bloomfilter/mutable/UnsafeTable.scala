@@ -4,7 +4,6 @@ import java.io._
 
 import bloomfilter.util.Unsafe.unsafe
 
-
 // TODO macro for various bits?
 trait UnsafeTable {
   def insert(index: Long, tag: Long): Boolean
@@ -13,7 +12,11 @@ trait UnsafeTable {
   def find(index: Long, tag: Long): Boolean
   def dispose(): Unit
 
-  protected def readPtrFrom(in: InputStream, ptr: Long, numBytes: Long): Unit = {
+  protected def readPtrFrom(
+      in: InputStream,
+      ptr: Long,
+      numBytes: Long
+  ): Unit = {
     val din = new DataInputStream(in)
     var n = 0L
     while (n + 8 <= numBytes) {
@@ -27,7 +30,11 @@ trait UnsafeTable {
       n += 1
     }
   }
-  protected def writePtrTo(out: OutputStream, ptr: Long, numBytes: Long): Unit = {
+  protected def writePtrTo(
+      out: OutputStream,
+      ptr: Long,
+      numBytes: Long
+  ): Unit = {
     val dout = new DataOutputStream(out)
     var n = 0L
     while (n + 8 <= numBytes) {
@@ -42,7 +49,11 @@ trait UnsafeTable {
     }
   }
 
-  protected def toSerializedForm(bytesPerBucket: Int, numberOfBuckets: Long): AnyRef = new UnsafeTable.SerializedForm(bytesPerBucket, numberOfBuckets, this)
+  protected def toSerializedForm(
+      bytesPerBucket: Int,
+      numberOfBuckets: Long
+  ): AnyRef =
+    new UnsafeTable.SerializedForm(bytesPerBucket, numberOfBuckets, this)
 
   def writeTo(out: OutputStream): Unit
   def readFrom(in: InputStream): Unit
@@ -51,7 +62,11 @@ trait UnsafeTable {
 object UnsafeTable {
 
   @SerialVersionUID(1L)
-  private class SerializedForm(bytesPerBucket: Int, numberOfBuckets: Long, @transient var unsafeTable: UnsafeTable) extends Serializable {
+  private class SerializedForm(
+      bytesPerBucket: Int,
+      numberOfBuckets: Long,
+      @transient var unsafeTable: UnsafeTable
+  ) extends Serializable {
     private def writeObject(oos: ObjectOutputStream): Unit = {
       oos.defaultWriteObject()
       unsafeTable.writeTo(oos)
@@ -60,7 +75,7 @@ object UnsafeTable {
     private def readObject(ois: ObjectInputStream): Unit = {
       ois.defaultReadObject()
       unsafeTable = bytesPerBucket match {
-        case 8 => new UnsafeTable8Bit(numberOfBuckets)
+        case 8  => new UnsafeTable8Bit(numberOfBuckets)
         case 16 => new UnsafeTable16Bit(numberOfBuckets)
       }
       unsafeTable.readFrom(ois)
@@ -73,7 +88,9 @@ object UnsafeTable {
 }
 
 @SerialVersionUID(1L)
-class UnsafeTable8Bit(val numberOfBuckets: Long) extends UnsafeTable with Serializable {
+class UnsafeTable8Bit(val numberOfBuckets: Long)
+    extends UnsafeTable
+    with Serializable {
 
   import UnsafeTable8Bit._
 
@@ -168,10 +185,10 @@ object UnsafeTable8Bit {
   private val bytesPerBucket = (BitsPerItem * TagsPerBucket + 7) >> 3
   private val tagMask = (1L << BitsPerItem) - 1
 }
-
-
 @SerialVersionUID(1)
-class UnsafeTable16Bit(val numberOfBuckets: Long) extends UnsafeTable with Serializable {
+class UnsafeTable16Bit(val numberOfBuckets: Long)
+    extends UnsafeTable
+    with Serializable {
 
   import UnsafeTable16Bit._
 
@@ -256,7 +273,6 @@ class UnsafeTable16Bit(val numberOfBuckets: Long) extends UnsafeTable with Seria
   @throws(classOf[java.io.ObjectStreamException])
   private def writeReplace: AnyRef = toSerializedForm(16, numberOfBuckets)
 }
-
 
 object UnsafeTable16Bit {
   val EmptyTag = 0L

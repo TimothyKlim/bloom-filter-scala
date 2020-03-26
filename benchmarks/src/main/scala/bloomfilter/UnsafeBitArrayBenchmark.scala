@@ -48,5 +48,4 @@ class UnsafeBitArrayBenchmark {
     chronicle.get(1000000)
   }
 
-
 }

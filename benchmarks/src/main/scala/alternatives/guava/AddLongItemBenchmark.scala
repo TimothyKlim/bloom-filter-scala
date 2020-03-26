@@ -9,12 +9,15 @@ class AddLongItemBenchmark {
   private val itemsExpected = 1000000L
   private val falsePositiveRate = 0.01
 
-  private val bf = BloomFilter.create[java.lang.Long](Funnels.longFunnel(), itemsExpected, falsePositiveRate)
+  private val bf = BloomFilter.create[java.lang.Long](
+    Funnels.longFunnel(),
+    itemsExpected,
+    falsePositiveRate
+  )
 
   @Benchmark
   def guava() = {
     bf.put(1L)
   }
-
 
 }

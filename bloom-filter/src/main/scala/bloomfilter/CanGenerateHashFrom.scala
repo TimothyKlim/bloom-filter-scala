@@ -8,25 +8,29 @@ trait CanGenerateHashFrom[From] {
 
 object CanGenerateHashFrom {
 
-  implicit case object CanGenerateHashFromLong extends CanGenerateHashFrom[Long] {
-    override def generateHash(from: Long): Long = MurmurHash3Generic.fmix64(from)
+  implicit case object CanGenerateHashFromLong
+      extends CanGenerateHashFrom[Long] {
+    override def generateHash(from: Long): Long =
+      MurmurHash3Generic.fmix64(from)
   }
 
-  implicit case object CanGenerateHashFromByteArray extends CanGenerateHashFrom[Array[Byte]] {
+  implicit case object CanGenerateHashFromByteArray
+      extends CanGenerateHashFrom[Array[Byte]] {
     override def generateHash(from: Array[Byte]): Long =
       MurmurHash3Generic.murmurhash3_x64_64(from, 0, from.length, 0)
   }
 
-  implicit case object CanGenerateHashFromString extends CanGenerateHashFrom[String] {
+  implicit case object CanGenerateHashFromString
+      extends CanGenerateHashFrom[String] {
 
     import bloomfilter.util.Unsafe.unsafe
 
-    private val valueOffset = unsafe.objectFieldOffset(classOf[String].getDeclaredField("value"))
+    private val valueOffset =
+      unsafe.objectFieldOffset(classOf[String].getDeclaredField("value"))
 
     override def generateHash(from: String): Long = {
-      val value = unsafe.getObject(from, valueOffset).asInstanceOf[Array[Char]]
+      val value = unsafe.getObject(from, valueOffset).asInstanceOf[Array[Byte]]
       MurmurHash3Generic.murmurhash3_x64_64(value, 0, from.length * 2, 0)
     }
   }
-
 }

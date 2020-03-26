@@ -2,7 +2,11 @@ package bloomfilter.hashing
 
 import java.nio.ByteBuffer
 
-import sandbox.hashing.{YonikMurmurHash3, CassandraMurmurHash, AlgebirdMurmurHash128}
+import sandbox.hashing.{
+  YonikMurmurHash3,
+  CassandraMurmurHash,
+  AlgebirdMurmurHash128
+}
 import sandbox.hashing.YonikMurmurHash3.LongPair
 import com.yahoo.sketches.hash.{MurmurHash3 => yMurmurHash3}
 import com.google.common.hash.Hashing

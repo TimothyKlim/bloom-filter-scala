@@ -1,6 +1,11 @@
 package tests.bloomfilter.mutable
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
+import java.io.{
+  ByteArrayInputStream,
+  ByteArrayOutputStream,
+  ObjectInputStream,
+  ObjectOutputStream
+}
 
 import bloomfilter.mutable.UnsafeBitArray
 import org.scalacheck.Test.Parameters
@@ -8,7 +13,10 @@ import org.scalacheck.commands.Commands
 import org.scalacheck.{Gen, Prop, Properties}
 import org.scalatest.{Inspectors, Matchers}
 
-class UnsafeBitArraySpec extends Properties("UnsafeBitArray") with Matchers with Inspectors {
+class UnsafeBitArraySpec
+    extends Properties("UnsafeBitArray")
+    with Matchers
+    with Inspectors {
 
   property("set & get") = new UnsafeBitArrayCommands().property()
   property("serializable") = serializationProp
@@ -24,8 +32,9 @@ class UnsafeBitArraySpec extends Properties("UnsafeBitArray") with Matchers with
 
     override def canCreateNewSut(
         newState: State,
-        initSuts: Traversable[State],
-        runningSuts: Traversable[Sut]): Boolean =
+        initSuts: Iterable[State],
+        runningSuts: Iterable[Sut]
+    ): Boolean =
       initSuts.isEmpty && runningSuts.isEmpty
 
     override def destroySut(sut: Sut): Unit =
@@ -90,7 +99,7 @@ class UnsafeBitArraySpec extends Properties("UnsafeBitArray") with Matchers with
           val deserializedBits = deserialized.asInstanceOf[UnsafeBitArray]
           try {
             deserializedBits.numberOfBits should equal(bits.numberOfBits)
-            forAll(0l until bits.numberOfBits) { idx =>
+            forAll(0L until bits.numberOfBits) { idx =>
               bits.get(idx) should equal(deserializedBits.get(idx))
             }
           } finally {

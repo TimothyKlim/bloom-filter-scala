@@ -3,68 +3,67 @@ import sbt.Keys._
 
 object Settings {
 
+  val JavaOptions = Seq(
+    "-Xmx4G",
+    "--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED",
+    "--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED",
+    "--illegal-access=permit"
+  )
+
   private lazy val build = Seq(
-    scalaVersion := "2.12.2",
-    crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.2"),
-
+    scalaVersion := "2.13.1",
+    crossScalaVersions := Seq("2.12.11"),
     autoCompilerPlugins := true,
-
-    scalacOptions ++= ScalacSettings.base ++ ScalacSettings.specificFor(scalaVersion.value),
-    javacOptions ++= JavacSettings.base ++ JavacSettings.specificFor(scalaVersion.value),
-    javaOptions += "-Xmx1G",
-    organization := "com.github.alexandrnikitin"
+    scalacOptions ++= ScalacSettings.base ++ ScalacSettings.specificFor(
+      scalaVersion.value
+    ),
+    javacOptions ++= JavacSettings.base,
+    Test / javaOptions ++= JavaOptions,
+    organization := "com.github.alexandrnikitin",
+    ThisBuild / Compile / doc / sources := Nil,
+    ThisBuild / Compile / sources := Nil,
+    ThisBuild / Compile / packageDoc / publishArtifact := false
   )
 
   lazy val root = build ++ Testing.settings ++ Publishing.noPublishSettings
-  lazy val bloomfilter = build ++ Testing.settings ++ Dependencies.bloomfilter ++ Publishing.settings ++
-      (scalacOptions ++= ScalacSettings.strictBase ++ ScalacSettings.strictSpecificFor(scalaVersion.value))
-  lazy val sandbox = build ++ Testing.settings ++ Dependencies.sandbox ++ Publishing.noPublishSettings
-  lazy val sandboxApp = build ++ Dependencies.sandboxApp ++ Publishing.noPublishSettings
-  lazy val tests = build ++ Testing.settings ++ Dependencies.tests ++ Publishing.noPublishSettings
-  lazy val benchmarks = build ++ Dependencies.benchmarks ++ Publishing.noPublishSettings
+  lazy val `bloom-filter` =
+    build ++ Testing.settings ++ Dependencies.`bloom-filter` ++ Publishing.settings ++
+      (scalacOptions ++= ScalacSettings.strictBase)
+  lazy val sandbox =
+    build ++ Testing.settings ++ Dependencies.sandbox ++ Publishing.noPublishSettings
+  lazy val sandboxApp =
+    build ++ Dependencies.sandboxApp ++ Publishing.noPublishSettings
+  lazy val tests =
+    build ++ Testing.settings ++ Dependencies.tests ++ Publishing.noPublishSettings
+  lazy val benchmarks =
+    build ++ Dependencies.benchmarks ++ Publishing.noPublishSettings
   lazy val examples = build ++ Publishing.noPublishSettings
 
   object JavacSettings {
     val base = Seq("-Xlint")
-
-    def specificFor(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
-      case Some((2, 12)) => Seq("-source", "1.8", "-target", "1.8")
-      case Some((2, 11)) => Seq("-source", "1.8", "-target", "1.8")
-      case Some((2, 10)) => Seq("-source", "1.7", "-target", "1.7")
-      case _ => Nil
-    }
   }
 
   object ScalacSettings {
     val base = Seq(
       "-deprecation",
-      "-encoding", "UTF-8",
+      "-encoding",
+      "UTF-8",
       "-feature",
       "-unchecked"
     )
 
-    def specificFor(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
-      case Some((2, 12)) => Seq("-target:jvm-1.8")
-      case Some((2, 11)) => Seq("-target:jvm-1.8", "-optimise")
-      case Some((2, 10)) => Seq("-target:jvm-1.7", "-optimise")
-      case _ => Nil
-    }
-
+    def specificFor(scalaVersion: String) =
+      CrossVersion.partialVersion(scalaVersion) match {
+        case _ => Seq("-release", "11")
+      }
 
     val strictBase = Seq(
-      "-Xfatal-warnings",
+      // "-Xfatal-warnings",
       "-Xlint",
       "-Ywarn-dead-code",
       "-Ywarn-numeric-widen",
       "-Ywarn-value-discard"
     )
-
-    def strictSpecificFor(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
-      case Some((2, 12)) => Seq("-Ywarn-unused", "-Ywarn-unused-import")
-      case Some((2, 11)) => Seq("-Ywarn-unused", "-Ywarn-unused-import")
-      case _ => Nil
-    }
-
   }
 
 }

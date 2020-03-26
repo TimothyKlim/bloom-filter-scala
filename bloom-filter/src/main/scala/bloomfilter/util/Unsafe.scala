@@ -7,16 +7,17 @@ import scala.util.Try
 
 object Unsafe {
   val unsafe: JUnsafe = Try {
-    classOf[JUnsafe]
-      .getDeclaredFields
-      .find { field =>
-        field.getType == classOf[JUnsafe]
-      }
+    classOf[JUnsafe].getDeclaredFields
+      .find { field => field.getType == classOf[JUnsafe] }
       .map { field =>
         field.setAccessible(true)
         field.get(null).asInstanceOf[JUnsafe]
       }
-      .getOrElse(throw new IllegalStateException("Can't find instance of sun.misc.Unsafe"))
+      .getOrElse(
+        throw new IllegalStateException(
+          "Can't find instance of sun.misc.Unsafe"
+        )
+      )
   } recover {
     case th: Throwable => throw new ExceptionInInitializerError(th)
   } get

@@ -9,12 +9,12 @@ class AddLongItemBenchmark {
   private val itemsExpected = 1000000L
   private val falsePositiveRate = 0.01
 
-  private val bf = BloomFilter.optimallySized[Long](itemsExpected.toDouble, falsePositiveRate)
+  private val bf =
+    BloomFilter.optimallySized[Long](itemsExpected.toDouble, falsePositiveRate)
 
   @Benchmark
   def breeze() = {
     bf.+=(1L)
   }
-
 
 }

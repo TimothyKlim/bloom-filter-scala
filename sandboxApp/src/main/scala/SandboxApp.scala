@@ -1,7 +1,10 @@
 import java.text.NumberFormat
 
 import bloomfilter.mutable.{CuckooFilter, UnsafeTable8Bit}
-import com.google.monitoring.runtime.instrumentation.{AllocationRecorder, Sampler}
+import com.google.monitoring.runtime.instrumentation.{
+  AllocationRecorder,
+  Sampler
+}
 import com.twitter.algebird.{BloomFilter => AlgebirdBloomFilter}
 
 import scala.util.Random
@@ -19,12 +22,16 @@ object SandboxApp {
     val freeMemory = runtime.freeMemory()
 
     sb.append("free memory: " + format.format(freeMemory / 1024) + "\n")
-    sb.append("allocated memory: " + format.format(allocatedMemory / 1024) + "\n")
+    sb.append(
+      "allocated memory: " + format.format(allocatedMemory / 1024) + "\n"
+    )
     sb.append("max memory: " + format.format(maxMemory / 1024) + "\n")
-    sb.append("total free memory: " + format.format((freeMemory + (maxMemory - allocatedMemory)) / 1024) + "\n")
+    sb.append(
+      "total free memory: " + format
+        .format((freeMemory + (maxMemory - allocatedMemory)) / 1024) + "\n"
+    )
     System.out.println(sb.toString())
   }
-
 
   def main(args: Array[String]): Unit = {
 
@@ -46,8 +53,10 @@ object SandboxApp {
 
     val itemsExpected = 10000L
     val falsePositiveRate = 0.1
-    var bf = AlgebirdBloomFilter(itemsExpected.toInt, falsePositiveRate, 0).create("")
-    val bf2 = bloomfilter.mutable.BloomFilter[String](itemsExpected, falsePositiveRate)
+    var bf =
+      AlgebirdBloomFilter(itemsExpected.toInt, falsePositiveRate, 0).create("")
+    val bf2 =
+      bloomfilter.mutable.BloomFilter[String](itemsExpected, falsePositiveRate)
 
     var i = 0
     while (i < itemsExpected) {
@@ -73,14 +82,20 @@ object SandboxApp {
       }
     }
 
-
   }
 
   def checkAllocations(): Unit = {
     val sampler: Sampler = new Sampler() {
-      def sampleAllocation(count: Int, desc: String, newObj: Object, size: Long) {
-        System.out.println("I just allocated the object " + newObj +
-          " of type " + desc + " whose size is " + size)
+      def sampleAllocation(
+          count: Int,
+          desc: String,
+          newObj: Object,
+          size: Long
+      ) {
+        System.out.println(
+          "I just allocated the object " + newObj +
+            " of type " + desc + " whose size is " + size
+        )
         if (count != -1) {
           System.out.println("It's an array of size " + count)
         }
